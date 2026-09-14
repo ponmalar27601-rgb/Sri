@@ -1,1 +1,226 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Sri 🎂</title><style>
+* {
+  box-sizing: border-box;
+}
 
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ffd6e8, #dcd6ff, #d8f5ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.screen {
+  width: 100%;
+  max-width: 500px;
+  padding: 30px 20px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #6b3fa0;
+}
+
+p {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+}
+
+button {
+  border: none;
+  padding: 14px 25px;
+  border-radius: 30px;
+  background: #8e5bd9;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px #9995;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.hidden {
+  display: none;
+}
+
+.cake {
+  position: relative;
+  width: 220px;
+  height: 130px;
+  margin: 45px auto 20px;
+}
+
+.cake-bottom {
+  position: absolute;
+  bottom: 0;
+  width: 220px;
+  height: 80px;
+  background: #ff9fbc;
+  border-radius: 15px 15px 25px 25px;
+}
+
+.cake-top {
+  position: absolute;
+  top: 25px;
+  left: 10px;
+  width: 200px;
+  height: 45px;
+  background: #fff0f6;
+  border-radius: 50%;
+}
+
+.candle {
+  position: absolute;
+  width: 18px;
+  height: 60px;
+  background: #8e5bd9;
+  top: -35px;
+  left: 101px;
+  border-radius: 5px;
+}
+
+.flame {
+  position: absolute;
+  width: 20px;
+  height: 28px;
+  background: #ffb300;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  top: -28px;
+  left: -1px;
+  box-shadow: 0 0 15px #ffb300;
+}
+
+.final {
+  animation: pop 0.8s ease;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.confetti {
+  position: fixed;
+  width: 9px;
+  height: 15px;
+  top: -20px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(720deg);
+  }
+}
+</style></head><body><div class="screen" id="intro">
+  <h1>Hey Sri… 👀</h1>
+  <p>I made a tiny something just for you. 🎁</p>
+  <button onclick="openSurprise()">Open your surprise ✨</button>
+</div><div class="screen hidden" id="birthday">
+  <h1>Happy Birthday, Sri! 🎂</h1>
+  <p>Okay birthday boy… Make a wish! ✨</p>  <div class="cake">
+    <div class="cake-bottom"></div>
+    <div class="cake-top"></div><div class="candle" onclick="blowCandle()">
+  <div class="flame" id="flame"></div>
+</div>
+
+  </div>  <p>🕯️ Tap the candle to blow it out!</p>
+</div><div class="screen hidden final" id="final">
+  <h1>Make that wish! ✨</h1>  <p>
+    I wish all your dreams come true. 💫<br>
+    May this year bring you lots of happiness,<br>
+    success and beautiful moments. ❤️
+  </p>  <h2>Have the cutest birthday ever! 🎈</h2>
+</div><script>
+function openSurprise() {
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("birthday").classList.remove("hidden");
+  playMusic();
+}
+
+function blowCandle() {
+  document.getElementById("flame").style.display = "none";
+
+  createConfetti();
+
+  setTimeout(() => {
+    document.getElementById("birthday").classList.add("hidden");
+    document.getElementById("final").classList.remove("hidden");
+  }, 1200);
+}
+
+function createConfetti() {
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement("div");
+    piece.className = "confetti";
+
+    piece.style.left = Math.random() * 100 + "vw";
+    piece.style.background =
+      ["#ff6b9d", "#8e5bd9", "#ffd166", "#4ecdc4", "#ff8c42"][
+        Math.floor(Math.random() * 5)
+      ];
+
+    piece.style.animationDelay = Math.random() * 1.5 + "s";
+
+    document.body.appendChild(piece);
+
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+
+function playMusic() {
+  try {
+    const AudioContext =
+      window.AudioContext || window.webkitAudioContext;
+
+    const ctx = new AudioContext();
+
+    const notes = [
+      392, 392, 440, 392, 523, 494,
+      392, 392, 440, 392, 587, 523
+    ];
+
+    notes.forEach((frequency, i) => {
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      oscillator.frequency.value = frequency;
+      oscillator.type = "sine";
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+
+      const start = ctx.currentTime + i * 0.35;
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.15, start + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.3);
+
+      oscillator.start(start);
+      oscillator.stop(start + 0.32);
+    });
+  } catch (e) {
+    console.log("Music unavailable");
+  }
+}
+</script></body>
+</html>
